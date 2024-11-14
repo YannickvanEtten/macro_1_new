@@ -26,7 +26,7 @@ def plot_abatement(mu_path_75,mu_path_85):
     plt.plot(mu_path_85, label=r' $\mu(t)| \beta=0.85$')
     plt.xlabel("Time Period")
     plt.ylabel("Value")
-    plt.title("Paths of Abatement mu")
+    plt.title("Paths of Abatement"+ r' $\mu$')
     plt.legend()
     plt.grid()
     plt.savefig('Abatement.png', dpi=300, bbox_inches='tight')
