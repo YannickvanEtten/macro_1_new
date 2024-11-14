@@ -26,7 +26,7 @@ def get_utility(consumption, sigma):
         return np.log(consumption)
     return (consumption ** (1 - sigma) - 1) / (1 - sigma)
 
-def iterate(V_0, pi_0, u_mat, beta, epsilon, i, n):
+def iterate2(V_0, pi_0, u_mat, beta, epsilon, i, n):
     V_mat = np.tile(V_0, (n, 1))
     V_1 = np.max(u_mat + beta * V_mat, axis=1) 
     pi = np.argmax(u_mat + beta * V_mat, axis=1)
@@ -34,34 +34,38 @@ def iterate(V_0, pi_0, u_mat, beta, epsilon, i, n):
         return V_1, pi
     print(i, np.linalg.norm(V_1 - V_0))
     i += 1
+    return iterate2(V_1, pi_0, u_mat, beta, epsilon, i, n)
+
+def iterate(V_0, pi_0, u_mat, beta, epsilon, i, n):
+    V_1 = np.zeros(n) 
+    pi = np.zeros(n, dtype=int)
+    for k in range(n):
+        V_1[k] = np.max(u_mat[k] + beta * V_0)
+        pi[k] = np.argmax(u_mat[k] + beta * V_0)
+    if np.linalg.norm(V_1 - V_0) < epsilon:
+        return V_1, pi
+    print(i, np.linalg.norm(V_1 - V_0))
+    i += 1
     return iterate(V_1, pi_0, u_mat, beta, epsilon, i, n)
 
-def F(K, alpha):
-    return K**alpha 
-
-def utility(c, sigma):
-    if sigma == 1:
-        return np.log(c)
-    else:
-        return (c ** (1 - sigma) - 1) / (1 - sigma)
-
-def consumption(K_t, M_t, K_next, M_next, b1, b2, a1, a2, gamma, alpha, delta, phi):
-    D = 1 + b1 * M_t**b2
-    abatement_term = 1 - a1 * ((M_next - (1 - phi) * M_t) / (gamma * K_t**alpha))**a2
-    net_production = K_t**alpha / D
-    return net_production * abatement_term + (1 - delta) * K_t - K_next
-
-def compute_utility_matrix(K_grid, M_grid, phi, gamma, alpha, S, b1, b2, a1, a2, delta, sigma):
-    n = len(K_grid) * len(M_grid)
-    U_mat = np.full((n, n), -np.inf)  
-    for i in range(n):
-        K_t, M_t = S[i]
-        print(i)
-        for j in range(n):
-            K_next, M_next = S[j]
-            c_t = consumption(K_t, M_t, K_next, M_next, b1, b2, a1, a2, gamma, alpha, delta, phi)
-            if c_t > 0 and 0 <= (M_next - (1 - phi) * M_t) / (gamma * K_t**alpha) <= 1:
-                U_mat[i, j] = utility(c_t, sigma)
+def calc_utility(S, phi, alpha, gamma, delta, a1, a2, b1, b2):
+    K = S[:,0]
+    M = S[:,1]
+    ratio1 = (1-phi)*M/K**alpha    
+    ratio2 = M/(K**alpha)[:, np.newaxis]
+    result = ratio2 - ratio1[:, np.newaxis]
+    mu = 1-(1/gamma)*result
+    mu_mat = np.where((mu >= 0) & (mu <= 1), mu, -np.inf)
+    c_1 = 1-a1*(mu_mat**a2)
+    c_2 = K**alpha /(1+b1* M **b2)
+    c_3 = c_2[:, np.newaxis] * c_1
+    c_4 = c_3 + (1-delta)*K 
+    c = c_4 - K
+    c_final = np.where((c > 0), c, -np.inf)
+    #condition = (c < 0) & (c != -np.inf)
+    #count = np.sum(condition)
+    U_mat = c_final.copy()
+    U_mat[U_mat >= 0] = np.log(U_mat[U_mat >= 0])
     return U_mat
 
 ###########################################################
@@ -89,16 +93,18 @@ def main():
     S = np.c_[K_mesh.ravel(), M_mesh.ravel()]
     print(S)
 
-    K = S[:,0]
-    M = S[:,1]
-    #print((M - (1 - phi) * M.T))
-    #test = (M - (1 - phi) * M.T) / (gamma * K**alpha)
-    ratio1 = (1-phi)*M/K**alpha
-    ratio2 = M.reshape(-1, 1)/(K**alpha)
-    print(ratio2)
+    U_mat = calc_utility(S, phi, alpha, gamma, delta, a1, a2, b1, b2)
 
-    #U_mat = compute_utility_matrix(K_grid, M_grid, phi, gamma, alpha, S, b1, b2, a1, a2, delta, sigma)
-    #print(U_mat)
+    n = U_mat.shape[0]
+    V_0 = np.zeros(n)
+    pi_0 = np.zeros(n)
+    iteration = 0
+    beta_75 = 0.75 
+    beta_85 = 0.85 
+    #V, pi_75 = iterate2(V_0, pi_0, U_mat, beta_75, epsilon, iteration, n)
+    #np.savetxt("pi_75.csv", pi_75, delimiter=",")
+    V, pi_85 = iterate(V_0, pi_0, U_mat, beta_85, epsilon, iteration, n)
+    np.savetxt("pi_85.csv", pi_85, delimiter=",")
 
 
 
