@@ -59,11 +59,10 @@ def calc_utility(S, phi, alpha, gamma, delta, a1, a2, b1, b2):
     c_1 = 1-a1*(mu_mat**a2)
     c_2 = K**alpha /(1+b1* M **b2)
     c_3 = c_2[:, np.newaxis] * c_1
-    c_4 = c_3 + (1-delta)*K 
+    vdK = (1-delta)*K
+    c_4 = c_3 + vdK[:, np.newaxis]
     c = c_4 - K
     c_final = np.where((c > 0), c, -np.inf)
-    #condition = (c < 0) & (c != -np.inf)
-    #count = np.sum(condition)
     U_mat = c_final.copy()
     U_mat[U_mat >= 0] = np.log(U_mat[U_mat >= 0])
     return U_mat
@@ -100,8 +99,8 @@ def main():
     iteration = 0
     beta_75 = 0.75 
     beta_85 = 0.85 
-    #V, pi_75 = iterate2(V_0, pi_0, U_mat, beta_75, epsilon, iteration, n)
-    #np.savetxt("pi_75.csv", pi_75, delimiter=",")
+    V, pi_75 = iterate(V_0, pi_0, U_mat, beta_75, epsilon, iteration, n)
+    np.savetxt("pi_75.csv", pi_75, delimiter=",")
     V, pi_85 = iterate(V_0, pi_0, U_mat, beta_85, epsilon, iteration, n)
     np.savetxt("pi_85.csv", pi_85, delimiter=",")
 
