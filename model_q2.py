@@ -81,8 +81,8 @@ def main():
     b2 = 2
     gamma = 0.13
     phi = 0.06
-    nK = 100  
-    nM = 100  
+    nK = 100
+    nM = 100 
     K1, KnK = 0.1, 0.4 
     M1, MnM = 0, 0.5  
     epsilon = 1e-4 
@@ -91,7 +91,6 @@ def main():
     M_grid = np.linspace(M1, MnM, nM)
     K_mesh, M_mesh = np.meshgrid(K_grid, M_grid)
     S = np.c_[K_mesh.ravel(), M_mesh.ravel()]
-    print(S)
 
     U_mat = calc_utility(S, phi, alpha, gamma, delta, a1, a2, b1, b2)
 

@@ -17,7 +17,7 @@ def plot_excess(M_path_75, M_path_85):
     plt.title("Paths of Excess Carbon M")
     plt.legend()
     plt.grid()
-    #plt.savefig('Excess.png', dpi=300, bbox_inches='tight')
+    plt.savefig('Excess.png', dpi=300, bbox_inches='tight')
     plt.show()
 
 def plot_abatement(mu_path_75,mu_path_85):
@@ -29,7 +29,7 @@ def plot_abatement(mu_path_75,mu_path_85):
     plt.title("Paths of Abatement mu")
     plt.legend()
     plt.grid()
-    #plt.savefig('Abatement.png', dpi=300, bbox_inches='tight')
+    plt.savefig('Abatement.png', dpi=300, bbox_inches='tight')
     plt.show()
 
 def plot_capital(K_path_75, K_path_85):
@@ -41,7 +41,7 @@ def plot_capital(K_path_75, K_path_85):
     plt.title("Paths of Capital")
     plt.legend()
     plt.grid()
-    #plt.savefig('Capital.png', dpi=300, bbox_inches='tight')
+    plt.savefig('Capital.png', dpi=300, bbox_inches='tight')
     plt.show()
 
 def plot_consumption(c_path_75, c_path_85):
@@ -53,7 +53,7 @@ def plot_consumption(c_path_75, c_path_85):
     plt.title("Paths of Consumption")
     plt.legend()
     plt.grid()
-    #plt.savefig('Consumption.png', dpi=300, bbox_inches='tight')
+    plt.savefig('Consumption.png', dpi=300, bbox_inches='tight')
     plt.show()
 
 def calc_paths(S, K_grid, M_grid, pi, T, a1, a2, b1, b2, phi, alpha, delta, gamma):
@@ -71,7 +71,7 @@ def calc_paths(S, K_grid, M_grid, pi, T, a1, a2, b1, b2, phi, alpha, delta, gamm
         K_path.append(K_next)
         M_path.append(M_next)
         
-        mu = (M_next - (1 - phi) * M_t) / (gamma * K_t**alpha)
+        mu = 1- (M_next - (1 - phi) * M_t) / (gamma * K_t**alpha)
         mu_path.append(mu)
         c = (K_t**alpha/(1+b1*M_t**b2))*(1-a1*(mu**a2))+(1-delta)*K_t-K_next
         c_path.append(c)
