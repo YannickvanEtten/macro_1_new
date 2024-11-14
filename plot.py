@@ -10,8 +10,8 @@ import pandas as pd
 ###########################################################
 def plot_excess(M_path_75, M_path_85):
     plt.figure(figsize=(10, 6))
-    plt.plot(M_path_75, label='M(t)| beta 0.75')
-    plt.plot(M_path_85, label='M(t)| beta 0.85')
+    plt.plot(M_path_75, label='M(t)|'+r' $\beta=0.75$')
+    plt.plot(M_path_85, label='M(t)|'+r' $\beta=0.85$')
     plt.xlabel("Time Period")
     plt.ylabel("Value")
     plt.title("Paths of Excess Carbon M")
@@ -22,8 +22,8 @@ def plot_excess(M_path_75, M_path_85):
 
 def plot_abatement(mu_path_75,mu_path_85):
     plt.figure(figsize=(10, 6))
-    plt.plot(mu_path_75, label='mu(t)| beta 0.75')
-    plt.plot(mu_path_85, label='mu(t)| beta 0.85')
+    plt.plot(mu_path_75, label=r' $\mu(t)| \beta=0.75$')
+    plt.plot(mu_path_85, label=r' $\mu(t)| \beta=0.85$')
     plt.xlabel("Time Period")
     plt.ylabel("Value")
     plt.title("Paths of Abatement mu")
@@ -34,8 +34,8 @@ def plot_abatement(mu_path_75,mu_path_85):
 
 def plot_capital(K_path_75, K_path_85):
     plt.figure(figsize=(10, 6))
-    plt.plot(K_path_75, label='K(t)| beta 0.75')
-    plt.plot(K_path_85, label='K(t)| beta 0.85')
+    plt.plot(K_path_75, label='K(t)|'+r' $\beta=0.75$')
+    plt.plot(K_path_85, label='K(t)|'+r' $\beta=0.85$')
     plt.xlabel("Time Period")
     plt.ylabel("Value")
     plt.title("Paths of Capital")
@@ -46,8 +46,8 @@ def plot_capital(K_path_75, K_path_85):
 
 def plot_consumption(c_path_75, c_path_85):
     plt.figure(figsize=(10, 6))
-    plt.plot(c_path_75, label='c(t)| beta 0.75')
-    plt.plot(c_path_85, label='c(t)| beta 0.85')
+    plt.plot(c_path_75, label='c(t)|'+r' $\beta=0.75$')
+    plt.plot(c_path_85, label='c(t)|'+r' $\beta=0.85$')
     plt.xlabel("Time Period")
     plt.ylabel("Value")
     plt.title("Paths of Consumption")
@@ -57,6 +57,9 @@ def plot_consumption(c_path_75, c_path_85):
     plt.show()
 
 def calc_paths(S, K_grid, M_grid, pi, T, a1, a2, b1, b2, phi, alpha, delta, gamma):
+    '''
+    All paths are computed following given theory
+    '''
     current_index = 0 
     K_path = [K_grid[0]]
     M_path = [M_grid[0]]

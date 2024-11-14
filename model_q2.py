@@ -18,25 +18,10 @@ import scipy.integrate as ing
 from scipy.integrate import quad
 import pandas as pd
 ###########################################################
-def steady_state_cap(alpha,beta,delta):
-    return(((1 + beta * (delta - 1)) / (beta * alpha))**(1 / (alpha - 1)))
-
-def get_utility(consumption, sigma):
-    if (sigma == 1):
-        return np.log(consumption)
-    return (consumption ** (1 - sigma) - 1) / (1 - sigma)
-
-def iterate2(V_0, pi_0, u_mat, beta, epsilon, i, n):
-    V_mat = np.tile(V_0, (n, 1))
-    V_1 = np.max(u_mat + beta * V_mat, axis=1) 
-    pi = np.argmax(u_mat + beta * V_mat, axis=1)
-    if np.linalg.norm(V_1 - V_0) < epsilon:
-        return V_1, pi
-    print(i, np.linalg.norm(V_1 - V_0))
-    i += 1
-    return iterate2(V_1, pi_0, u_mat, beta, epsilon, i, n)
-
 def iterate(V_0, pi_0, u_mat, beta, epsilon, i, n):
+    '''
+    Value iteration, but this time row wise. Since a 10 000 by 10 000 matrix takes a lot of storage data
+    '''
     V_1 = np.zeros(n) 
     pi = np.zeros(n, dtype=int)
     for k in range(n):
@@ -49,6 +34,9 @@ def iterate(V_0, pi_0, u_mat, beta, epsilon, i, n):
     return iterate(V_1, pi_0, u_mat, beta, epsilon, i, n)
 
 def calc_utility(S, phi, alpha, gamma, delta, a1, a2, b1, b2):
+    """
+    derive utility in a matrix multiplication method ensuring fast computing time
+    """
     K = S[:,0]
     M = S[:,1]
     ratio1 = (1-phi)*M/K**alpha    
@@ -103,9 +91,6 @@ def main():
     np.savetxt("pi_75.csv", pi_75, delimiter=",")
     V, pi_85 = iterate(V_0, pi_0, U_mat, beta_85, epsilon, iteration, n)
     np.savetxt("pi_85.csv", pi_85, delimiter=",")
-
-
-
 
 ###########################################################
 ### call main
